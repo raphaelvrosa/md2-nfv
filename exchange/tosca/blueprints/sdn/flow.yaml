@@ -1,0 +1,94 @@
+tosca_definitions_version: cloudify_dsl_1_2
+
+imports:
+    # - http://www.getcloudify.org/spec/cloudify/3.3.1/types.yaml
+    - ../../types/types.yaml
+    - ../../plugins/vnfm-cfy/vnfm_plugin.yaml
+
+inputs:
+    switch_id:
+        description: datapath id to receive config
+        type: string
+        default: '0000000000000001'
+    switch_url:
+        description: datapath id to receive config
+        type: string
+        default: 'http://127.0.0.1:8891'
+    in_port:
+        type: string
+        default: '1'
+    out_port:
+        type: string
+        default: '2'
+    queue_max_rate:
+        type: string
+        default: "50000000"
+    tag:
+        type: integer
+        default: 4097
+    action:
+        type: string
+        default: "push"
+
+
+node_templates:
+
+    switch:
+        type: cloudify.vnfm_cfy.switch
+        properties:
+            id: { get_input: switch_id }
+            url: { get_input: switch_url }
+
+#    meter:
+#        type: cloudify.vnfm_cfy.meter
+#        properties:
+#            meter_id: 1
+#        relationships:
+#          - type: cloudify.vnfm_cfy.relationships.meter
+#            target: switch
+#          - type: cloudify.vnfm_cfy.relationships.band
+#            target: band
+#
+#    band:
+#        type: cloudify.vnfm_cfy.band
+#        properties:
+#            action: 'DROP'
+#            flag: 'KBPS'
+#            rate: 10000
+
+    # TODO ovs-vsctl set-manager ptcp:6632
+    # TODO automate  curl -X PUT -d '"tcp:127.0.0.1:6632"' http://localhost:8080/v1.0/conf/switches/0000000000000001/ovsdb_addr
+    queue:
+        type: cloudify.vnfm_cfy.queue
+        properties:
+            port_name: { get_input: out_port }
+            type: "linux-htb"
+            max_rate: { get_input: out_port }
+            queues: [ {"max_rate": '10000000', "min_rate": '1000'}, {"max_rate": '20000000', "min_rate": '1000'}, ]
+        relationships:
+          - type: cloudify.vnfm_cfy.relationships.queue
+            target: switch
+
+    flow:
+        type: cloudify.vnfm_cfy.flow
+        properties:
+            priority: 2
+            match:
+                in_port: { get_input: in_port }
+                dl_vlan: { get_input: tag }
+            actions:
+                output: { get_input: out_port }
+                queue: '0'
+                tag: { get_input: action }
+        relationships:
+#          - type: cloudify.relationships.depends_on
+#            target: meter
+          - type: cloudify.relationships.depends_on
+            target: queue
+          - type: cloudify.vnfm_cfy.relationships.flow
+            target: switch
+
+outputs:
+  ack:
+    description: Config deployed correctly
+    value: { get_attribute: [flow, ack] }

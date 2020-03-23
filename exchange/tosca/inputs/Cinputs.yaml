@@ -1,0 +1,2 @@
+{action: push, in_port: '4', out_port: '1', queue_max_rate: '50000000', switch_id: '0000000000000003',
+  switch_url: 'http://127.0.0.1:8893', tag: 4098}

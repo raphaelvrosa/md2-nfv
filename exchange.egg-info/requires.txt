@@ -1,0 +1,6 @@
+gevent
+requests
+Flask>=0.11
+Flask-RESTful>=0.3.5
+PyYAML>=3.10
+py-solc

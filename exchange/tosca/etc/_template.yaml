@@ -1,0 +1,34 @@
+id: ''
+name: ''
+workflows: []
+description: ''
+states:
+  - state_00:
+      id: ''
+      blueprint: 'path'
+      inputs: {}
+      outputs: {}
+      next: state_01
+      transitions:
+        - target: 1
+          trigger: ''
+          input: ''
+  - state_01:
+      id: ''
+      blueprint: 'path'
+      inputs: {}
+      outputs: {}
+      next: state_02
+      transitions:
+        - target: 1
+          trigger: ''
+          input: ''
+  - state_02:
+      id: ''
+      blueprint: 'path'
+      inputs: {}
+      outputs: {}
+      transitions:
+        - target: 1
+          trigger: ''
+          input: ''

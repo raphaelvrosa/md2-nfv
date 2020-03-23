@@ -1,0 +1,12 @@
+colors: false
+
+logging:
+
+  # path to a file where cli logs will be saved.
+  filename: /tmp/aria-raphael/aria-cli.log
+
+  # configuring level per logger
+  loggers:
+
+    # main logger of the cli. provides basic descriptions for executed operations.
+    aria_cli.cli.main: info

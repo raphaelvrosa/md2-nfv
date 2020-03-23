@@ -1,0 +1,12 @@
+
+nso:
+  id: 'B'
+  address: 'http://127.0.0.1:8882'
+
+sdn:
+  id: '0000000000000002'
+  address: 'http://127.0.0.1:8892'
+
+dapp:
+  method: 'rpc'
+  address: 'http://127.0.0.1:8102'

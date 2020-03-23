@@ -1,0 +1,29 @@
+id: '1'
+name: 'sdn-flows'
+inputs:
+    robot_address:
+        type: string
+        required: true
+workflows: ['install', 'update', 'uninstall']
+description: 'flow.xml'
+states:
+  0:
+      id: '0'
+      blueprint: '/sdn/flow.yaml'
+      default: true
+      inputs:
+        switch_id: null
+        switch_url: null
+        in_port: null
+        out_port: null
+        queue_max_rate: null
+        tag: null
+        action: null
+      outputs:
+        ack:
+          persist: false
+      status: false
+      transitions:
+          - target: 0
+            trigger: ''
+            input: 'ok'

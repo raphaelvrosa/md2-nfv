@@ -1,0 +1,185 @@
+plugins:
+    vnfm-cfy:
+      executor: central_deployment_agent
+      source: vnfm-cfy
+      install: true
+
+data_types:
+    cloudify.vnfm_cfy.match:
+        properties:
+            in_port:
+                type: integer
+                required: false
+            dl_src:
+                type: string
+                required: false
+            dl_dst:
+                type: string
+                required: false
+            dl_type:
+                type: string
+                required: false
+            dl_vlan:
+                type: integer
+                required: false
+            nw_src:
+                type: string
+                required: false
+            nw_dst:
+                type: string
+                required: false
+            ipv6_src:
+                type: string
+                required: false
+            ipv6_dst:
+                type: string
+                required: false
+            nw_proto:
+                type: string
+                required: false
+            tp_src:
+                type: integer
+                required: false
+            tp_dst:
+                type: integer
+                required: false
+            ip_dscp:
+                type: integer
+                required: false
+
+    cloudify.vnfm_cfy.actions:
+        properties:
+            mark:
+                type: string
+                required: false
+            meter:
+                type: string
+                required: false
+            queue:
+                type: string
+                required: false
+            tag:
+                type: string
+                required: false
+                description: "push, match or pop tag"
+            output:
+                type: string
+                required: false
+
+
+node_types:
+    cloudify.vnfm_cfy.Base:
+        derived_from: cloudify.nodes.Root
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                create:
+                    implementation: vnfm-cfy.vnfm_cfy.tasks.vnfm_create
+                start:
+                    implementation: vnfm-cfy.vnfm_cfy.tasks.vnfm_start
+                update:
+                    implementation: vnfm-cfy.vnfm_cfy.tasks.vnfm_update
+                stop:
+                    implementation: vnfm-cfy.vnfm_cfy.tasks.vnfm_stop
+                delete:
+                    implementation: vnfm-cfy.vnfm_cfy.tasks.vnfm_delete
+
+    cloudify.vnfm_cfy.switch:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            id:
+                type: string
+                required: true
+            url:
+                type: string
+                required: true
+
+    cloudify.vnfm_cfy.port:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            id:
+                type: string
+                required: false
+
+    cloudify.vnfm_cfy.flow:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            priority:
+                type: integer
+                required: false
+            match:
+                type: cloudify.vnfm_cfy.match
+                required: false
+            actions:
+                type: cloudify.vnfm_cfy.actions
+                required: false
+
+    cloudify.vnfm_cfy.meter:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            meter_id:
+                type: integer
+                required: true
+
+
+    cloudify.vnfm_cfy.band:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            action:
+                type: string
+                required: false
+            flag:
+                type: string
+                required: false
+            burst_size:
+                type: integer
+                required: false
+            rate:
+                type: integer
+                required: false
+            prec_level:
+                type: integer
+                required: false
+
+    cloudify.vnfm_cfy.queue:
+        derived_from: cloudify.vnfm_cfy.Base
+        properties:
+            port_name:
+                type: string
+                required: false
+            type:
+                type: string
+                required: true
+            max_rate:
+                type: string
+                required: true
+            queues:
+                type: string
+                required: true
+                default: []
+
+
+relationships:
+  cloudify.vnfm_cfy.relationships.flow:
+    derived_from: cloudify.relationships.depends_on
+
+  cloudify.vnfm_cfy.relationships.queue:
+    derived_from: cloudify.relationships.depends_on
+
+  cloudify.vnfm_cfy.relationships.meter:
+    derived_from: cloudify.relationships.depends_on
+
+  cloudify.vnfm_cfy.relationships.band:
+    derived_from: cloudify.relationships.contained_in
+
+
+#workflows:
+#  create:
+#    mapping: vnfm-cfy.vnfm_cfy.workflows.create
+#  start:
+#    mapping: vnfm-cfy.vnfm_cfy.workflows.start
+#  update:
+#    mapping: vnfm-cfy.vnfm_cfy.workflows.update
+#  stop:
+#    mapping: vnfm-cfy.vnfm_cfy.workflows.stop
+#  delete:
+#    mapping: vnfm-cfy.vnfm_cfy.workflows.delete
