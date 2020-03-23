@@ -36,6 +36,6 @@ setup(
         "cloudify-plugins-common==3.3.1",
         "cloudify-rest-client==3.3.1",
         "cloudify-dsl-parser==3.3.1",
-        "requests==2.7.0"
+        "requests==2.20.0"
     ]
 )
